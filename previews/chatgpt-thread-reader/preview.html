@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thread Reader v1.2 — interactive preview</title>
+  <link rel="stylesheet" href="panel.css">
+  <style>
+    :root { font-family: ui-sans-serif, system-ui, sans-serif; color-scheme: light; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:#f7f7f4; color:#27342f; }
+    .demo-banner { background:#28473a; padding:20px max(22px, calc((100vw - 800px)/2)); color:white; }
+    .demo-banner h1 { margin:0 0 5px; font-size:21px; }
+    .demo-banner p { margin:0; font-size:13px; color:#c9e1d4; max-width:680px; }
+    .conversation { padding:32px 26px 55vh; width:min(830px,100%); margin:0 auto; }
+    .turn { padding:26px 24px; margin: 30px 0; border-radius:18px; }
+    .user { background:#e2e9e4; width:84%; margin-left:auto; }
+    .assistant { background:white; box-shadow:0 1px 6px #0001; }
+    .byline { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1.2px; color:#426551; margin-bottom:12px; }
+    .markdown p { line-height:1.75; margin: 0 0 18px; }
+    .markdown h2 { font-size:18px; }
+    .markdown li { margin-bottom:10px; line-height:1.65; }
+    .native-controls { margin-top:14px; }
+    .native-controls button { background:#f1f5f2; border:1px solid #cdd7cf; border-radius:10px; padding:8px 12px; cursor:pointer; }
+    .demo-hint { color:#67746b; font-size:12px; }
+    @media(max-width:600px) { .conversation { padding:15px 14px 65vh; } .turn { padding:16px; } .demo-banner { padding:18px 14px; } }
+  </style>
+</head>
+<body>
+  <header class="demo-banner">
+    <h1>ChatGPT Thread Reader</h1>
+    <p>Interactive browser preview with three sample assistant responses. The floating reader remains on-screen while moving through the thread. The installed extension uses the same controls on ChatGPT.</p>
+  </header>
+  <main class="conversation" aria-label="Example conversation">
+    <article class="turn user" data-testid="conversation-turn-1"><div class="byline">User</div>Can you explain what an eclipse is?</article>
+    <article class="turn assistant" data-testid="conversation-turn-2"><div class="byline">Assistant</div><div data-message-author-role="assistant"><div class="markdown">
+      <h2>Understanding eclipses</h2>
+      <p>An eclipse happens when one celestial body blocks sunlight from reaching another, or passes into its shadow. From Earth, the two familiar kinds are solar eclipses and lunar eclipses.</p>
+      <p>During a solar eclipse, the Moon passes between Earth and the Sun. During a lunar eclipse, Earth passes between the Sun and the Moon, casting a shadow across the Moon.</p>
+      <p>Neither kind happens every month because the Moon's orbit is tilted relative to Earth's orbital plane.</p>
+    </div></div><div class="native-controls"><button aria-label="Read aloud" onclick="this.textContent='Native Read Aloud activated';this.setAttribute('data-clicked','true')">Read aloud (demo)</button></div></article>
+    <article class="turn user" data-testid="conversation-turn-3"><div class="byline">User</div>What is an annular solar eclipse?</article>
+    <article class="turn assistant" data-testid="conversation-turn-4"><div class="byline">Assistant</div><div data-message-author-role="assistant"><div class="markdown">
+      <h2>The ring of fire</h2>
+      <p>An annular eclipse occurs when the Moon passes in front of the Sun while appearing slightly smaller than the Sun. A thin bright ring of the Sun remains visible around its edge.</p>
+      <p>The Moon's distance from Earth varies over its orbit. When it is farther away, its apparent size can be too small to cover the Sun completely.</p>
+      <p>Never look directly at the Sun without correctly rated eclipse glasses, even during an annular eclipse.</p>
+    </div></div><div class="native-controls"><button aria-label="Read aloud" onclick="this.textContent='Native Read Aloud activated';this.setAttribute('data-clicked','true')">Read aloud (demo)</button></div></article>
+    <article class="turn user" data-testid="conversation-turn-5"><div class="byline">User</div>How might someone safely observe one?</article>
+    <article class="turn assistant" data-testid="conversation-turn-6"><div class="byline">Assistant</div><div data-message-author-role="assistant"><div class="markdown">
+      <h2>Watching safely</h2>
+      <p>Use ISO 12312-2 compliant eclipse viewers or indirect projection. Ordinary sunglasses, smoked glass, and exposed film are not safe replacements.</p>
+      <p>With a pinhole projector, let sunlight pass through a tiny opening onto a separate surface. View the projected image rather than looking into the Sun.</p>
+      <p>The timing and location determine which stages of an eclipse you can see, so check a reliable local eclipse map before planning your observation.</p>
+    </div></div><div class="native-controls"><button aria-label="Read aloud" onclick="this.textContent='Native Read Aloud activated';this.setAttribute('data-clicked','true')">Read aloud (demo)</button></div></article>
+    <p class="demo-hint">End of example thread</p>
+  </main>
+  <script>window.__THREAD_READER_DEMO__ = true;</script>
+  <script src="content.js"></script>
+</body>
+</html>
