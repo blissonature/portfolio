@@ -25,6 +25,7 @@
     </div>
     <div class="tr-body">
       <div class="tr-position"><span data-field="position">— / —</span><span class="tr-active-label" data-field="activity">Ready</span></div>
+      <p class="tr-current-excerpt" data-field="excerpt" aria-live="polite">Find a response to begin.</p>
       <div class="tr-transport" role="group" aria-label="Reading controls">
         <button data-action="previous" title="Previous response" aria-label="Previous response"><span aria-hidden="true">⏮</span><small>Previous</small></button>
         <button data-action="play" title="Play or resume" aria-label="Play"><span aria-hidden="true">▶</span><small>Play</small></button>
@@ -42,9 +43,18 @@
         <label class="tr-autonext"><input data-setting="autoNext" type="checkbox" checked> Continue to next response</label>
       </div>
       <p class="tr-status" data-field="status" role="status" aria-live="polite">Choose a response, then press Play.</p>
-      <div class="tr-footer"><button data-action="refresh" title="Find current responses">↻ Refresh responses</button><span>Alt+Shift+R</span></div>
+      <div class="tr-footer"><button data-action="refresh" title="Find current responses">↻ Refresh responses</button><span>ChatGPT responses</span></div>
     </div>`;
-  document.body.appendChild(root);
+  // The page-owned launcher is the fallback activation path: it is available
+  // whenever the matched content script is installed, even if the toolbar
+  // service worker or Chrome keyboard command does not run.
+  const launcher = document.createElement('button');
+  launcher.id = 'thread-reader-launcher';
+  launcher.type = 'button';
+  launcher.textContent = 'Reader';
+  launcher.setAttribute('aria-label', 'Show ChatGPT Thread Reader');
+  launcher.setAttribute('aria-controls', 'thread-reader-root');
+  document.body.append(root, launcher);
 
   const $ = selector => root.querySelector(selector);
   const statusEl = $('[data-field="status"]');
@@ -56,10 +66,14 @@
   function setOpen(open) {
     state.open = Boolean(open);
     root.hidden = !state.open;
+    launcher.hidden = state.open;
+    launcher.setAttribute('aria-expanded', String(state.open));
     try { sessionStorage.setItem(OPEN_KEY, String(state.open)); } catch (_) { /* storage disabled */ }
     if (state.open) refresh(true);
     else stop(true);
   }
+
+  launcher.addEventListener('click', () => setOpen(true));
 
   function getResponses() {
     const turns = [];
@@ -87,6 +101,10 @@
       else item.turn.removeAttribute('data-thread-reader-current');
     });
     $('[data-field="position"]').textContent = state.index < 0 ? `0 / ${state.items.length}` : `${state.index + 1} / ${state.items.length}`;
+    const current = state.items[state.index];
+    $('[data-field="excerpt"]').textContent = current
+      ? (meaningfulText(current.body).slice(0, 150) || 'No readable text')
+      : 'No assistant response selected.';
     $('[data-action="previous"]').disabled = state.index <= 0;
     $('[data-action="next"]').disabled = state.index < 0 || state.index >= state.items.length - 1;
     $('[data-action="play"]').disabled = state.index < 0;
@@ -383,8 +401,12 @@
   observer.observe(document.body, {subtree: true, childList: true});
 
   if (globalThis.chrome?.runtime?.onMessage && !DEMO) {
-    chrome.runtime.onMessage.addListener(message => {
+    chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       if (message?.type === 'THREAD_READER_TOGGLE') setOpen(!state.open);
+      else if (message?.type === 'THREAD_READER_SHOW') setOpen(true);
+      else return false;
+      sendResponse({ok: true, open: state.open, responses: state.items.length});
+      return false;
     });
   }
   if (DEMO) {
