@@ -67,3 +67,39 @@
 @media (prefers-reduced-motion: reduce) {
   [data-thread-reader-speaking="true"] { transition: none; }
 }
+
+/* Launcher is deliberately outside the panel so closing never strands it. */
+#thread-reader-launcher {
+  all: initial;
+  position: fixed;
+  top: 50%;
+  right: 0;
+  z-index: 2147483000;
+  transform: translateY(-50%);
+  background: #233c34;
+  color: #f4e5bd;
+  border: 1px solid #719385;
+  border-right: 0;
+  border-radius: 10px 0 0 10px;
+  padding: 12px 10px;
+  font: 600 12px/1.2 system-ui,sans-serif;
+  box-shadow: 0 4px 16px #0004;
+  cursor: pointer;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+#thread-reader-launcher[hidden] { display: none; }
+#thread-reader-launcher:focus-visible { outline: 2px solid #d7bd7d; outline-offset: 2px; }
+#thread-reader-root .tr-current-excerpt {
+  font: 12px/1.4 system-ui,sans-serif;
+  color: #dae4dd;
+  margin: -1px 0 11px;
+  min-height: 34px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+@media (max-width: 600px) {
+  #thread-reader-launcher { top: auto; bottom: 100px; transform: none; padding: 8px 10px; }
+}
