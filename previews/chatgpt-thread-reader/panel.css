@@ -1,0 +1,69 @@
+#thread-reader-root, #thread-reader-root * { box-sizing: border-box; }
+#thread-reader-root {
+  all: initial;
+  position: fixed;
+  right: 20px;
+  top: 100px;
+  width: min(328px, calc(100vw - 24px));
+  z-index: 2147483000;
+  color: #e9f0ed;
+  background: #172421;
+  font: 13px/1.4 system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  border: 1px solid #41685d;
+  border-radius: 16px;
+  box-shadow: 0 14px 48px #0007;
+  overflow: hidden;
+  color-scheme: dark;
+}
+#thread-reader-root[hidden] { display: none; }
+#thread-reader-root button, #thread-reader-root select, #thread-reader-root input { font: inherit; }
+#thread-reader-root button { cursor: pointer; color: inherit; }
+#thread-reader-root button:focus-visible, #thread-reader-root select:focus-visible,
+#thread-reader-root input:focus-visible { outline: 2px solid #e7c47c; outline-offset: 2px; }
+#thread-reader-root button:disabled { opacity: 0.3; cursor: default; }
+#thread-reader-root .tr-header {
+  padding: 11px 12px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: #233c34; cursor: grab; touch-action: none; user-select: none;
+}
+#thread-reader-root .tr-brand { display:flex; align-items:center; gap: 8px; letter-spacing: .1px; font-size: 14px; }
+#thread-reader-root .tr-dot { height: 9px; width: 9px; border-radius: 100%; background: #ddbd79; }
+#thread-reader-root .tr-close { border: none; background: transparent; font-size: 24px; line-height: 20px; padding: 0 3px; }
+#thread-reader-root .tr-body { padding: 12px; }
+#thread-reader-root .tr-position { display:flex; justify-content:space-between; font-variant-numeric:tabular-nums; font-size: 12px; color:#a7cbbf; margin:0 2px 10px; }
+#thread-reader-root .tr-active-label { color:#e1c78f; }
+#thread-reader-root .tr-transport { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap: 6px; }
+#thread-reader-root .tr-transport button {
+  min-height: 61px; display:flex; flex-direction:column; gap:5px; align-items:center; justify-content:center;
+  border: 1px solid #547b6d; border-radius: 10px; background: #30483f; font-size:21px; line-height: 1;
+}
+#thread-reader-root .tr-transport button:hover:not(:disabled) { background: #426556; }
+#thread-reader-root .tr-transport button[data-action="play"] { background:#d7bd7d; color:#172421; border-color:#e0ca91; }
+#thread-reader-root .tr-transport button[data-action="play"]:hover:not(:disabled) { background:#ebd49e; }
+#thread-reader-root .tr-transport small { font-size: 10px; font-weight:600; line-height:1; }
+#thread-reader-root .tr-settings { margin-top:14px; display:grid; gap:7px; }
+#thread-reader-root .tr-label { font-size: 11px; font-weight:600; color:#bdd1c9; }
+#thread-reader-root select { width:100%; min-height: 36px; color:inherit; background:#253a33; border:1px solid #59776d; border-radius:7px; padding:6px; }
+#thread-reader-root .tr-speed-head { display:flex; align-items:center; justify-content:space-between; padding-top:5px; }
+#thread-reader-root output { font-size: 12px; font-variant-numeric:tabular-nums; color:#e5c783; }
+#thread-reader-root input[type="range"] { width:100%; accent-color:#d7bd7d; height: 16px; cursor:pointer; }
+#thread-reader-root input[type="range"]:disabled { opacity:0.35; }
+#thread-reader-root .tr-autonext { display:flex; align-items:center; gap:9px; color:#d4e4dd; font-size:12px; margin-top:5px; cursor:pointer; }
+#thread-reader-root input[type="checkbox"] { accent-color:#d7bd7d; width:15px; height:15px; }
+#thread-reader-root .tr-status { min-height:36px; padding:10px 0 2px; margin:0; font-size:12px; color:#c3d5cd; }
+#thread-reader-root .tr-footer { display:flex; align-items:center; justify-content:space-between; border-top:1px solid #426057; margin-top:8px; padding-top:9px; color:#94b5a7; font-size:10px; }
+#thread-reader-root .tr-footer button { padding:2px; background:transparent; border:none; text-decoration:underline; font-size:11px; }
+[data-thread-reader-current="true"] { outline: 2px solid rgba(61,151,121,.55); outline-offset: 7px; border-radius: 6px; }
+[data-thread-reader-speaking="true"] { background:rgba(225,181,80,.13); box-shadow: -3px 0 #cba75b; transition: background .2s; scroll-margin-top: 80px; }
+@media (max-width: 600px) {
+  #thread-reader-root { top: auto; bottom: 10px; left: 10px; right: 10px; width: auto; border-radius:12px; }
+  #thread-reader-root .tr-header { cursor: default; padding:8px 12px; }
+  #thread-reader-root .tr-body { padding: 8px 12px; }
+  #thread-reader-root .tr-transport button { min-height: 50px; }
+  #thread-reader-root .tr-settings { margin-top: 7px; gap: 4px; }
+  #thread-reader-root .tr-status { min-height: 28px; padding-top:5px; }
+  #thread-reader-root .tr-footer { margin-top:5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-thread-reader-speaking="true"] { transition: none; }
+}
