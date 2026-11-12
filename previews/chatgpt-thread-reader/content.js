@@ -75,18 +75,37 @@
 
   launcher.addEventListener('click', () => setOpen(true));
 
+  // A single response model for legacy ChatGPT and the newer Chat/Work shell.
+  // The new UI may omit both data-message-author-role and article wrappers.
+  const ASSISTANT_MARKERS = [
+    '[data-message-author-role="assistant"]',
+    '[data-message-role="assistant"]',
+    '[data-role="assistant"]',
+    '[data-message-author="assistant"]',
+    '[data-content-search-unit-key$=":assistant"]',
+    '[data-chatgpt-search-unit-key$=":assistant"]',
+    '[data-markdown-text-style="assistant-message"]'
+  ].join(',');
+  const RESPONSE_CONTENT = '[data-markdown-text-style="assistant-message"], [data-testid="message-content"], .markdown, .prose, [class*="markdown"], [class*="MarkdownRoot"]';
+  const TURN_CONTAINERS = '[data-turn-key], [data-testid^="conversation-turn"], [data-content-search-turn-key], article[data-turn-id], article';
+
   function getResponses() {
     const turns = [];
     const seen = new Set();
-    document.querySelectorAll('[data-message-author-role="assistant"]').forEach(message => {
-      if (root.contains(message)) return;
-      const turn = message.closest('article[data-testid^="conversation-turn"], [data-testid^="conversation-turn"], article[data-turn-id], article') || message;
-      if (seen.has(turn)) return;
+    const conversation = document.querySelector('main') || document;
+    for (const marker of conversation.querySelectorAll(ASSISTANT_MARKERS)) {
+      if (root.contains(marker) || launcher.contains(marker)) continue;
+      // Only assistant-authorized markers are permitted. Never read the user
+      // bubble, sidebar or composer by falling back to broad page text.
+      const turn = marker.closest(TURN_CONTAINERS) || marker;
+      if (seen.has(turn)) continue;
+      const body = marker.matches(RESPONSE_CONTENT)
+        ? marker
+        : marker.querySelector(RESPONSE_CONTENT) || marker;
+      if (!meaningfulText(body)) continue;
       seen.add(turn);
-      const body = message.querySelector('.markdown, .prose, [data-testid="message-content"], [class*="markdown"]') || message;
-      if (!body.textContent.trim()) return;
-      turns.push({turn, body, message});
-    });
+      turns.push({turn, body, message: marker});
+    }
     return turns;
   }
 
@@ -137,7 +156,7 @@
     }
     if (state.playing && selected && state.items[state.index]?.turn !== selected.turn) stop(true);
     updatePosition(false);
-    if (state.items.length === 0) status('No assistant responses found in this thread.');
+    if (state.items.length === 0) status('No assistant responses detected. ChatGPT may be loading or using an unsupported layout.');
   }
 
   function meaningfulText(element) {
